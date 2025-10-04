@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Vigenere Cipher</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function copyText() {
+      const text = document.getElementById("cipherResult").innerText;
+      navigator.clipboard.writeText(text);
+    }
+  </script>
+</head>
+<body class="bg-white text-white flex justify-center items-center min-h-screen">
+  <div class="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-lg">
+    <h1 class="text-2xl font-bold text-blue-500 mb-4">Vigenere Cipher</h1>
+
+    <!-- Form -->
+    <form method="POST" class="space-y-4">
+      <textarea name="text" placeholder="Masukkan teks" class="w-full p-3 rounded bg-gray-800 text-white">{{ request.form.get('text', '') }}</textarea>
+
+      <input type="text" name="key" placeholder="Masukkan key" 
+             value="{{ request.form.get('key', '') }}" 
+             class="w-full p-3 rounded bg-gray-800 text-white"/>
+
+      <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white">
+        <option value="encrypt" {% if request.form.get('mode') == 'encrypt' %}selected{% endif %}>Enkripsi</option>
+        <option value="decrypt" {% if request.form.get('mode') == 'decrypt' %}selected{% endif %}>Dekripsi</option>
+      </select>
+
+      <button type="submit" class="w-full bg-blue-600 py-2 rounded-lg hover:bg-blue-700">Proses</button>
+    </form>
+
+    <!-- Hasil -->
+    {% if result %}
+    <div class="mt-4 p-3 bg-gray-700 rounded">
+      <p class="font-semibold">Hasil:</p>
+      <p id="cipherResult">{{ result }}</p>
+      <button onclick="copyText()" class="mt-2 px-3 py-1 bg-green-600 rounded hover:bg-green-700">Copy</button>
+    </div>
+
+    <div class="mt-4 p-3 bg-gray-800 rounded">
+      <p class="font-semibold mb-2">Proses:</p>
+      <ul class="list-disc pl-5 space-y-1 text-sm">
+        {% for step in process %}
+          <li>{{ step }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

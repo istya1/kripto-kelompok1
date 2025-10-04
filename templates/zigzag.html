@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Zigzag Cipher</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function copyResult() {
+      const text = document.getElementById("cipherResult").innerText;
+      navigator.clipboard.writeText(text);
+    }
+  </script>
+</head>
+<body class="bg-white text-white flex justify-center items-center min-h-screen">
+  <div class="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-2xl">
+    <h1 class="text-2xl font-bold text-blue-500 mb-4">Zigzag Cipher</h1>
+
+    <!-- Form -->
+    <form method="POST" class="space-y-4">
+      <textarea name="text" placeholder="Masukkan teks" 
+                class="w-full p-3 rounded bg-gray-800 text-white">{{ request.form.get('text', '') }}</textarea>
+
+      <input type="number" name="key" placeholder="Masukkan key (rail)" 
+             value="{{ request.form.get('key', '') }}" 
+             class="w-full p-3 rounded bg-gray-800 text-white"/>
+
+      <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white">
+        <option value="encrypt" {% if request.form.get('mode') == 'encrypt' %}selected{% endif %}>Enkripsi</option>
+        <option value="decrypt" {% if request.form.get('mode') == 'decrypt' %}selected{% endif %}>Dekripsi</option>
+      </select>
+
+      <button type="submit" class="w-full bg-blue-600 py-2 rounded-lg hover:bg-blue-700">Proses</button>
+    </form>
+
+    <!-- Hasil -->
+    {% if result %}
+    <div class="mt-4 p-3 bg-gray-700 rounded flex items-center justify-between">
+      <div>
+        <p class="font-semibold">Hasil:</p>
+        <p id="cipherResult">{{ result }}</p>
+      </div>
+      <button onclick="copyResult()" class="bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded">
+        📋
+      </button>
+    </div>
+    {% endif %}
+
+    <!-- Visualisasi Zigzag -->
+    {% if grid %}
+    <div class="mt-6">
+      <p class="font-semibold mb-2">Visualisasi Zigzag:</p>
+      <div class="overflow-x-auto">
+        <table class="border border-gray-600 border-collapse">
+          {% for row in grid %}
+            <tr>
+              {% for col in row %}
+                <td class="border border-gray-600 w-10 h-10 text-center text-green-400 font-bold">
+                  {{ col }}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
