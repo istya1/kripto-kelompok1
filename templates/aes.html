@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Zigzag Cipher</title>
+  <title>AES Cipher</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     function copyResult() {
@@ -12,16 +12,16 @@
   </script>
 </head>
 <body class="bg-white text-white flex justify-center items-center min-h-screen">
-  <div class="bg-gray-900 text-center p-8 rounded-lg shadow-md w-full max-w-2xl">
-    <h1 class="text-2xl font-bold text-blue-500 mb-4">Zigzag Cipher</h1>
+  <div class="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-2xl">
+    <h1 class="text-2xl text-center font-bold text-blue-500 mb-4">AES Cipher</h1>
 
     <!-- Form -->
     <form method="POST" class="space-y-4">
-      <textarea name="text" placeholder="Masukkan teks" 
+      <textarea name="text" placeholder="Masukkan teks"
                 class="w-full p-3 rounded bg-gray-800 text-white">{{ request.form.get('text', '') }}</textarea>
 
-      <input type="number" name="key" placeholder="Masukkan key (rail)" 
-             value="{{ request.form.get('key', '') }}" 
+      <input type="text" name="key" placeholder="Masukkan key (16/24/32 karakter)"
+             value="{{ request.form.get('key', '') }}"
              class="w-full p-3 rounded bg-gray-800 text-white"/>
 
       <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white">
@@ -39,29 +39,19 @@
         <p class="font-semibold">Hasil:</p>
         <p id="cipherResult">{{ result }}</p>
       </div>
-      <button onclick="copyResult()" class="bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded">
-        Copy
-      </button>
+      <button onclick="copyResult()" class="bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded">Copy</button>
     </div>
     {% endif %}
 
-    <!-- Visualisasi Zigzag -->
-    {% if grid %}
-    <div class="mt-6">
-      <p class="font-semibold mb-2">Visualisasi Zigzag:</p>
-      <div class="overflow-x-auto">
-        <table class="border border-gray-600 border-collapse">
-          {% for row in grid %}
-            <tr>
-              {% for col in row %}
-                <td class="border border-gray-600 w-10 h-10 text-center text-green-400 font-bold">
-                  {{ col }}
-                </td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </table>
-      </div>
+    <!-- Proses Perhitungan -->
+    {% if process %}
+    <div class="mt-6 bg-gray-800 p-4 rounded">
+      <p class="font-semibold text-green-400 mb-2">Langkah-langkah Perhitungan:</p>
+      <ul class="list-disc pl-5 text-sm space-y-1">
+        {% for step in process %}
+        <li>{{ step }}</li>
+        {% endfor %}
+      </ul>
     </div>
     {% endif %}
   </div>

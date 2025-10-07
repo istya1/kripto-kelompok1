@@ -85,13 +85,14 @@ def vigenere_encrypt(text, key):
             k = key_nums[i % len(key)]
             c = (p + k) % 26
             result += num_to_char(c)
-            process.append(f"({char}->{p} + {key[i % len(key)]}->{k}) mod 26 = {c} -> {num_to_char(c)}")
+            process.append({
+                "P": p,
+                "K": k,
+                "hasil": c,
+                "char": num_to_char(c)
+            })
             i += 1
-        else:
-            result += char
-            process.append(f"Karakter '{char}' tidak diubah")
     return result, process
-
 
 def vigenere_decrypt(cipher, key):
     result = ""
@@ -189,6 +190,44 @@ def stream_cipher_lfsr(text, seed, taps, mode="encrypt"):
         proses = [{"ct": b, "ks": str(k), "pt": r} for b, k, r in zip(ct_bits, ks, pt_bits)]
 
         return plaintext, proses
+    
+    # ================== AES ==================
+def aes_encrypt(plaintext, key):
+    process = []
+    key_bytes = key.encode('utf-8')
+    if len(key_bytes) not in [16, 24, 32]:
+        raise ValueError("Key harus 16, 24, atau 32 byte!")
+
+    cipher = AES.new(key_bytes, AES.MODE_ECB)
+    padded_text = pad(plaintext.encode('utf-8'), AES.block_size)
+    process.append(f"Teks asli: {plaintext}")
+    process.append(f"Setelah padding (blok 16 byte): {padded_text}")
+
+    encrypted_bytes = cipher.encrypt(padded_text)
+    base64_cipher = base64.b64encode(encrypted_bytes).decode('utf-8')
+    process.append(f"Hasil enkripsi (byte): {encrypted_bytes}")
+    process.append(f"Hasil base64: {base64_cipher}")
+
+    return base64_cipher, process
+
+
+def aes_decrypt(ciphertext, key):
+    process = []
+    key_bytes = key.encode('utf-8')
+    if len(key_bytes) not in [16, 24, 32]:
+        raise ValueError("Key harus 16, 24, atau 32 byte!")
+
+    cipher = AES.new(key_bytes, AES.MODE_ECB)
+    decoded_data = base64.b64decode(ciphertext)
+    process.append(f"Cipher base64: {ciphertext}")
+    process.append(f"Setelah decode base64: {decoded_data}")
+
+    decrypted_bytes = cipher.decrypt(decoded_data)
+    unpadded_text = unpad(decrypted_bytes, AES.block_size).decode('utf-8')
+    process.append(f"Setelah dekripsi (byte): {decrypted_bytes}")
+    process.append(f"Setelah unpad: {unpadded_text}")
+
+    return unpadded_text, process
 
 # ================== ROUTES ==================
 
@@ -196,6 +235,9 @@ def stream_cipher_lfsr(text, seed, taps, mode="encrypt"):
 def index():
     return render_template("index.html")
 
+@app.route('/metode')
+def metode():
+    return render_template('metode.html')
 
 def zigzag_visualize(text, key):
     rail = [['' for _ in range(len(text))] for _ in range(key)]
@@ -267,6 +309,25 @@ def stream_page():
             result, proses = stream_cipher_lfsr(text, seed=key, taps=[0, 2], mode="decrypt")
 
     return render_template("stream.html", result=result, proses=proses, text=text, key=key, mode=mode)
+
+@app.route("/aes", methods=["GET", "POST"])
+def aes_page():
+    result = None
+    process = []
+    if request.method == "POST":
+        text = request.form.get("text", "")
+        key = request.form.get("key", "")
+        mode = request.form.get("mode", "")
+
+        try:
+            if mode == "encrypt":
+                result, process = aes_encrypt(text, key)
+            elif mode == "decrypt":
+                result, process = aes_decrypt(text, key)
+        except Exception as e:
+            process.append(f"Error: {str(e)}")
+
+    return render_template("aes.html", result=result, process=process)
 
 if __name__ == "__main__":
     app.run(debug=True)
