@@ -2,32 +2,19 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Endes Kriptografi</title>
+  <title>Kombinasi Cipher</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Animasi efek mengetik */
-    .typing {
-      overflow: hidden;
-      border-right: .15em solid #224f98;
-      white-space: nowrap;
-      margin: 0 auto;
-      letter-spacing: .05em;
-      animation: typing 3s steps(30, end), blink .75s step-end infinite;
+  <script>
+    function copyResult() {
+      const text = document.getElementById("cipherResult").innerText;
+      navigator.clipboard.writeText(text);
     }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
-    }
-    @keyframes blink {
-      from, to { border-color: transparent }
-      50% { border-color: #2657a5 }
-    }
-  </style>
+  </script>
 </head>
-<body class="bg-black text-white font-sans">
-  
- <!-- Navbar -->
+<body class="bg-white text-white min-h-screen flex flex-col">
+
+ 
+   <!-- Navbar -->
 <nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
   <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
     
@@ -101,36 +88,61 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 });
 </script>
 
-  <!-- Hero Section dengan background foto -->
-  <section 
-  class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative" 
-  style="background-image: url('{{ url_for('static', filename='back.jpg') }}');">
+  <!-- Konten -->
+  <section class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative"
+         style="background-image: url('{{ url_for("static", filename='back.jpg') }}');"> 
 
-    <!-- Overlay gelap -->
-    <div class="absolute inset-0 bg-black bg-opacity-80"></div>
+    
+    <!-- Overlay gelap + blur -->
+     <div class="absolute inset-0 bg-black bg-opacity-80"></div>
 
-    <!-- Konten -->
-    <div class="relative z-10 mt-20">
-      <h2 class="typing text-3xl md:text-5xl font-bold mb-4">WELCOME TO </h2>
-      <h1 class="text-4xl md:text-6xl font-extrabold text-blue-600 mb-6"
-    style="text-shadow: 2px 2px 0 #ffffff, -2px 2px 0 #ffffff, 2px -2px 0 #ffffff,-2px -2px 0 #ffffff;">
- ENDES KRIPTOGRAFI
-</h1>
+    <main class="relative z-10 bg-gray-900/90 p-8 rounded-xl shadow-lg w-full max-w-2xl overflow-hidden">
+      <h1 class="text-2xl text-center font-bold text-blue-600 mb-4">Kombinasi 4 Layer</h1>
 
-      <h3 class="max-w-2xl text-gray-200 mb-8">
-        Kriptografi adalah ilmu dan seni menjaga kerahasiaan informasi dengan cara 
-        mengubah pesan (plaintext) menjadi bentuk tidak terbaca (ciphertext). 
-        Hanya orang dengan kunci tertentu yang dapat mengembalikan pesan ke bentuk aslinya.
-      </h3>
-    <a href="/metode" 
-   class="bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
-  Know More
-</a>
+      <!-- Form -->
+      <form method="POST" class="space-y-4">
+        <textarea name="text" placeholder="Masukkan teks"
+          class="w-full p-3 rounded bg-gray-800 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
+          rows="5">{{ request.form.get('text', '') }}</textarea>
 
-    </div>
+        <input type="text" name="key" placeholder="Masukkan key"
+          value="{{ request.form.get('key', '') }}"
+          class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+
+        <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="encrypt" {% if request.form.get('mode') == 'encrypt' %}selected{% endif %}>Enkripsi</option>
+          <option value="decrypt" {% if request.form.get('mode') == 'decrypt' %}selected{% endif %}>Dekripsi</option>
+        </select>
+
+        <button type="submit" class="w-full bg-blue-600 py-2 rounded-lg hover:bg-blue-700 transition">Proses</button>
+      </form>
+
+      <!-- Hasil Akhir -->
+      {% if result %}
+      <div class="mt-5 p-4 bg-gray-800 rounded-lg max-h-40 overflow-y-auto break-words">
+        <div class="flex items-center justify-between mb-2">
+          <p class="font-semibold text-blue-300">Hasil Kombinasi:</p>
+          <button onclick="copyResult()" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm">Copy</button>
+        </div>
+        <p id="cipherResult" class="text-sm text-gray-200 leading-relaxed">{{ result }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Proses Perhitungan -->
+      {% if process %}
+      <div class="mt-6 bg-gray-800 p-4 rounded-lg max-h-60 overflow-y-auto">
+        <p class="font-semibold text-blue-400 mb-2">Langkah-Langkah Kombinasi:</p>
+        <ul class="list-disc pl-5 text-sm space-y-1 text-gray-300">
+          {% for step in process %}
+          <li class="break-words">{{ step }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </main>
   </section>
 
-  <!-- Footer -->
+   <!-- Footer -->
   <footer class="bg-black text-gray-500 text-center py-6 border-t border-gray-800">
     © 2025 Endes Kriptografi | Dibuat oleh Kelompok 1 Kriptografi
   </footer>

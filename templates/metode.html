@@ -1,77 +1,161 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Metode Kriptografi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metode Kriptografi | ENDES</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Efek typing optional */
+    @keyframes typing { from { width: 0 } to { width: 100% } }
+  </style>
 </head>
+<body class="min-h-screen bg-black text-gray-100">
 
-<body
-    class="min-h-screen bg-gradient-to-br from-[#0a001a] via-[#120033] to-[#001a33] text-gray-100 flex flex-col items-center justify-center p-10">
+   <!-- Navbar -->
+<nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
+  <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+    
+    <!-- Logo -->
+    <a href="/" class="text-2xl font-extrabold tracking-wide text-blue-500 hover:text-blue-400 transition-all">
+      ENDES<span class="text-gray-300">Crypto</span>
+    </a>
 
-    <h2 class="typing text-3xl md:text-5xl font-bold mb-4">METODE</h2>
-      <h1 class="text-4xl md:text-6xl font-extrabold text-blue-500 mb-6">KRIPTOGRAFI</h1>
-      <p class="max-w-2xl text-center text-gray-200 mb-8">
-        Berikut beberapa metode enkripsi yang digunakan untuk mengamankan pesan.
-        Tiap metode memiliki karakteristik dan tingkat keamanan yang berbeda.
-      </p>
+    <!-- Menu -->
+    <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
+      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
+      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
+      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
+    </ul>
 
-    <!-- Grid 4 card sejajar -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+    <!-- Tombol Menu Mobile -->
+    <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-blue-400 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+           stroke-width="2" stroke="currentColor" class="w-7 h-7">
+        <path stroke-linecap="round" stroke-linejoin="round" 
+              d="M4 6h16M4 12h16m-7 6h7" />
+      </svg>
+    </button>
+  </div>
 
-        <!-- Zigzag -->
-        <div
-            class="bg-[#0d0024]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 transition-transform duration-300">
+  <!-- Menu Mobile -->
+  <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
+    <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
+      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
+      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
+      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Style khusus untuk animasi & efek hover -->
+<style>
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background-color: #3b82f6; /* warna biru Tailwind */
+  transition: width 0.3s ease;
+}
+.nav-link:hover {
+  color: #3b82f6;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+</style>
+
+<!-- Script untuk toggle menu di mobile -->
+<script>
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+});
+</script>
+
+  <!-- Main Content -->
+  <main class="pt-14 md:pt-10 flex flex-col items-center justify-center  text-center">
+
+
+    <!-- Background Section -->
+   <section class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative"
+         style="background-image: url('{{ url_for("static", filename='back.jpg') }}');">
+
+
+      <div class="absolute inset-0 bg-black bg-opacity-80"></div>
+
+     <div class="relative z-20 max-w-6xl -mt-8">
+
+        <h2 class="text-3xl md:text-5xl font-bold mb-4 text-white">METODE</h2>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-blue-500 mb-6">KRIPTOGRAFI</h1>
+        <p class="max-w-2xl mx-auto text-gray-200 mb-10">
+          Berikut beberapa metode enkripsi yang digunakan untuk mengamankan pesan.
+          Tiap metode memiliki karakteristik dan tingkat keamanan yang berbeda.
+        </p>
+
+        <!-- Grid Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <!-- Zigzag -->
+          <div class="bg-[#0000]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 hover:shadow-lg transition-transform duration-300">
             <h2 class="text-lg font-semibold text-blue-300 mb-2">Zigzag Cipher</h2>
             <p class="text-sm text-gray-300 mb-4">
-                Menyusun plaintext dalam pola zigzag, lalu dibaca baris per baris untuk menghasilkan ciphertext.
+              Menyusun plaintext dalam pola zigzag, lalu dibaca baris per baris untuk menghasilkan ciphertext.
             </p>
-            <a href="/zigzag" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm">Lihat
-                Detail</a>
-        </div>
+           
+          </div>
 
-        <!-- Vigenere -->
-        <div
-            class="bg-[#0d0024]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 transition-transform duration-300">
+          <!-- Vigenere -->
+          <div class="bg-[#0000]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 hover:shadow-lg transition-transform duration-300">
             <h2 class="text-lg font-semibold text-blue-300 mb-2">Vigenere Cipher</h2>
             <p class="text-sm text-gray-300 mb-4">
-                Menggunakan kunci teks untuk menggeser huruf-huruf plaintext menjadi ciphertext.
+              Menggunakan kunci teks untuk menggeser huruf-huruf plaintext menjadi ciphertext.
             </p>
-            <a href="/vigenere" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm">Lihat
-                Detail</a>
-        </div>
+           
+          </div>
 
-        <!-- Stream -->
-        <div
-            class="bg-[#0d0024]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 transition-transform duration-300">
+          <!-- Stream -->
+          <div class="bg-[#0000]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 hover:shadow-lg transition-transform duration-300">
             <h2 class="text-lg font-semibold text-blue-300 mb-2">Stream Cipher (LFSR)</h2>
             <p class="text-sm text-gray-300 mb-4">
-                Menggunakan aliran bit kunci untuk mengenkripsi data secara berurutan.
+              Menggunakan aliran bit kunci untuk mengenkripsi data secara berurutan.
             </p>
-            <a href="/stream" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm">Lihat
-                Detail</a>
-        </div>
+           
+          </div>
 
-        <!-- AES -->
-        <div
-            class="bg-[#0d0024]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 transition-transform duration-300">
+          <!-- AES -->
+          <div class="bg-[#0000]/70 border border-blue-800/40 rounded-xl p-5 text-center hover:scale-105 hover:shadow-lg transition-transform duration-300">
             <h2 class="text-lg font-semibold text-blue-300 mb-2">AES Cipher</h2>
             <p class="text-sm text-gray-300 mb-4">
-                Algoritma simetris berbasis blok yang aman untuk enkripsi modern.
+              Algoritma simetris berbasis blok yang aman untuk enkripsi modern.
             </p>
-            <a href="/aes" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm">Lihat
-                Detail</a>
+            
+          </div>
         </div>
+      </div>
+    </section>
 
-    </div>
+  </main>
 
-    <div class="mt-10 text-center">
-        <a href="/" class="bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
-            Back
-        </a>
-    </div>
-
+ <!-- Footer -->
+  <footer class="bg-black text-gray-500 text-center py-6 border-t border-gray-800">
+    © 2025 Endes Kriptografi | Dibuat oleh Kelompok 1 Kriptografi
+  </footer>
 </body>
-
 </html>

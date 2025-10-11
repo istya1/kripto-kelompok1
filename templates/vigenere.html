@@ -11,84 +11,170 @@
     }
   </script>
 </head>
-<body class="bg-white text-white flex justify-center items-center min-h-screen">
-   <div class="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-2xl">
-    <h1 class="text-2xl text-center font-bold text-blue-500 mb-4">Vigenere Cipher</h1>
+<body class="bg-white text-white">
 
-    <!-- Form Input -->
-    <form method="POST" class="space-y-4">
-      <textarea name="text" placeholder="Masukkan teks" class="w-full p-3 rounded bg-gray-800 text-white">{{ request.form.get('text', '') }}</textarea>
+  <!-- Navbar -->
+<nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
+  <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+    
+    <!-- Logo -->
+    <a href="/" class="text-2xl font-extrabold tracking-wide text-blue-500 hover:text-blue-400 transition-all">
+      ENDES<span class="text-gray-300">Crypto</span>
+    </a>
 
-      <input type="text" name="key" placeholder="Masukkan key" 
-             value="{{ request.form.get('key', '') }}" 
-             class="w-full p-3 rounded bg-gray-800 text-white"/>
+    <!-- Menu -->
+    <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
+      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
+      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
+      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
+    </ul>
 
-      <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white">
-        <option value="encrypt" {% if request.form.get('mode') == 'encrypt' %}selected{% endif %}>Enkripsi</option>
-        <option value="decrypt" {% if request.form.get('mode') == 'decrypt' %}selected{% endif %}>Dekripsi</option>
-      </select>
-
-      <button type="submit" class="w-full bg-blue-600 py-2 rounded-lg hover:bg-blue-700">Proses</button>
-    </form>
-
-    <!-- Hasil Enkripsi -->
-    {% if result %}
-    <div class="mt-6 bg-gray-800 p-4 rounded">
-      <p class="font-semibold text-lg mb-1 text-blue-400">Hasil:</p>
-      <p id="cipherResult" class="text-xl tracking-wider">{{ result }}</p>
-      <button onclick="copyText()" class="mt-3 px-3 py-1 bg-green-600 rounded hover:bg-green-700">Copy</button>
-    </div>
-
-    <!-- Tabel Perhitungan -->
-    <div class="mt-6 bg-gray-800 p-4 rounded">
-      <p class="font-semibold text-lg mb-3 text-blue-400">Proses Perhitungan:</p>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-300 border border-gray-700">
-          <thead class="bg-gray-700 text-gray-100">
-            <tr>
-              <th class="px-3 py-2 border border-gray-600">No</th>
-              <th class="px-3 py-2 border border-gray-600">P</th>
-              <th class="px-3 py-2 border border-gray-600">K</th>
-              <th class="px-3 py-2 border border-gray-600">(P + K) mod 26</th>
-              <th class="px-3 py-2 border border-gray-600">Hasil (angka)</th>
-              <th class="px-3 py-2 border border-gray-600">Hasil (huruf)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for step in process %}
-            <tr class="hover:bg-gray-700">
-              <td class="px-3 py-2 border border-gray-700">{{ loop.index }}</td>
-              <td class="px-3 py-2 border border-gray-700">{{ step.P }}</td>
-              <td class="px-3 py-2 border border-gray-700">{{ step.K }}</td>
-              <td class="px-3 py-2 border border-gray-700">({{ step.P }} + {{ step.K }}) mod 26 = {{ step.hasil }}</td>
-              <td class="px-3 py-2 border border-gray-700">{{ step.hasil }}</td>
-              <td class="px-3 py-2 border border-gray-700 font-semibold text-blue-400">{{ step.char }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  <!-- Hasil -->
-<div class="mt-6 bg-gray-800 p-4 rounded">
-  <p class="font-semibold text-lg mb-3 text-blue-400">Hasil</p>
-
-  <p><span class="font-semibold text-gray-300">Plaintext:</span> 
-    <span class="text-white">{{ request.form.get('text', '') }}</span>
-  </p>
-
-  <p><span class="font-semibold text-gray-300">Key:</span> 
-    <span class="text-white">{{ request.form.get('key', '') }}</span>
-  </p>
-
-  <p><span class="font-semibold text-gray-300">Ciphertext:</span> 
-    <span class="text-blue-400 font-bold text-lg">{{ result }}</span>
-  </p>
-</div>
-
-    </div>
-    {% endif %}
+    <!-- Tombol Menu Mobile -->
+    <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-blue-400 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+           stroke-width="2" stroke="currentColor" class="w-7 h-7">
+        <path stroke-linecap="round" stroke-linejoin="round" 
+              d="M4 6h16M4 12h16m-7 6h7" />
+      </svg>
+    </button>
   </div>
+
+  <!-- Menu Mobile -->
+  <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
+    <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
+      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
+      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
+      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Style khusus untuk animasi & efek hover -->
+<style>
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background-color: #3b82f6; /* warna biru Tailwind */
+  transition: width 0.3s ease;
+}
+.nav-link:hover {
+  color: #3b82f6;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+</style>
+
+<!-- Script untuk toggle menu di mobile -->
+<script>
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+});
+</script>
+
+  <!-- Konten utama dengan background -->
+ <section class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative"
+         style="background-image: url('{{ url_for("static", filename='back.jpg') }}');">
+
+    <!-- Overlay gelap + blur -->
+     <div class="absolute inset-0 bg-black bg-opacity-80"></div>
+
+    <!-- Konten form Vigenere -->
+    <div class="relative z-10 bg-gray-900/90 p-8 rounded-xl shadow-lg w-full max-w-3xl">
+      <h1 class="text-3xl text-center font-bold text-blue-600 mb-6">Vigenere Cipher</h1>
+
+      <!-- Form Input -->
+      <form method="POST" class="space-y-4">
+        <textarea name="text" placeholder="Masukkan teks"
+          class="w-full p-3 rounded bg-gray-800 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
+          rows="4">{{ request.form.get('text', '') }}</textarea>
+
+        <input type="text" name="key" placeholder="Masukkan key"
+          value="{{ request.form.get('key', '') }}"
+          class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+
+        <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="encrypt" {% if request.form.get('mode') == 'encrypt' %}selected{% endif %}>Enkripsi</option>
+          <option value="decrypt" {% if request.form.get('mode') == 'decrypt' %}selected{% endif %}>Dekripsi</option>
+        </select>
+
+        <button type="submit" class="w-full bg-blue-600 py-2 rounded-lg hover:bg-blue-700 transition">Proses</button>
+      </form>
+
+      <!-- Hasil Enkripsi -->
+      {% if result %}
+      <div class="mt-6 bg-gray-800 p-4 rounded">
+        <p class="font-semibold text-lg mb-1 text-blue-400">Hasil:</p>
+        <p id="cipherResult" class="text-lg tracking-wider text-gray-100">{{ result }}</p>
+        <button onclick="copyText()" class="bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded mt-2">
+          Copy
+        </button>
+      </div>
+
+      <!-- Tabel Perhitungan -->
+      <div class="mt-6 bg-gray-800 p-4 rounded">
+        <p class="font-semibold text-lg mb-3 text-blue-400">Proses Perhitungan:</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left text-gray-300 border border-gray-700">
+            <thead class="bg-gray-700 text-gray-100">
+              <tr>
+                <th class="px-3 py-2 border border-gray-600">No</th>
+                <th class="px-3 py-2 border border-gray-600">P</th>
+                <th class="px-3 py-2 border border-gray-600">K</th>
+                <th class="px-3 py-2 border border-gray-600">(P + K) mod 26</th>
+                <th class="px-3 py-2 border border-gray-600">Hasil (angka)</th>
+                <th class="px-3 py-2 border border-gray-600">Hasil (huruf)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for step in process %}
+              <tr class="hover:bg-gray-700">
+                <td class="px-3 py-2 border border-gray-700">{{ loop.index }}</td>
+                <td class="px-3 py-2 border border-gray-700">{{ step.P }}</td>
+                <td class="px-3 py-2 border border-gray-700">{{ step.K }}</td>
+                <td class="px-3 py-2 border border-gray-700">({{ step.P }} + {{ step.K }}) mod 26 = {{ step.hasil }}</td>
+                <td class="px-3 py-2 border border-gray-700">{{ step.hasil }}</td>
+                <td class="px-3 py-2 border border-gray-700 font-semibold text-blue-400">{{ step.char }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ringkasan -->
+      <div class="mt-6 bg-gray-800 p-4 rounded">
+        <p class="font-semibold text-lg mb-3 text-blue-400">Ringkasan</p>
+        <p><span class="font-semibold text-gray-300">Plaintext:</span>
+          <span class="text-white">{{ request.form.get('text', '') }}</span></p>
+        <p><span class="font-semibold text-gray-300">Key:</span>
+          <span class="text-white">{{ request.form.get('key', '') }}</span></p>
+        <p><span class="font-semibold text-gray-300">Ciphertext:</span>
+          <span class="text-blue-400 font-bold text-lg">{{ result }}</span></p>
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+ <!-- Footer -->
+  <footer class="bg-black text-gray-500 text-center py-6 border-t border-gray-800">
+    © 2025 Endes Kriptografi | Dibuat oleh Kelompok 1 Kriptografi
+  </footer>
 </body>
 </html>
