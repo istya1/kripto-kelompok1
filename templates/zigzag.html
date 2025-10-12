@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <title>Zigzag Cipher</title>
@@ -11,93 +12,119 @@
     }
   </script>
 </head>
+
 <body class="text-white">
 
-  
-   <!-- Navbar -->
-<nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
-  <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-    
-    <!-- Logo -->
-    <a href="/" class="text-2xl font-extrabold tracking-wide text-blue-500 hover:text-blue-400 transition-all">
-      ENDES<span class="text-gray-300">Crypto</span>
-    </a>
 
-    <!-- Menu -->
-    <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
-      <li><a href="/" class="nav-link">Home</a></li>
-      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
-      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
-      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
-      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
-      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
-    </ul>
+  <!-- Navbar -->
+  <nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
+    <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
 
-    <!-- Tombol Menu Mobile -->
-    <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-blue-400 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-           stroke-width="2" stroke="currentColor" class="w-7 h-7">
-        <path stroke-linecap="round" stroke-linejoin="round" 
-              d="M4 6h16M4 12h16m-7 6h7" />
-      </svg>
-    </button>
-  </div>
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-extrabold tracking-wide text-blue-500 hover:text-blue-400 transition-all">
+        ENDES<span class="text-gray-300">Crypto</span>
+      </a>
 
-  <!-- Menu Mobile -->
-  <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
-    <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
-      <li><a href="/" class="nav-link">Home</a></li>
-      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
-      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
-      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
-      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
-      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
-    </ul>
-  </div>
-</nav>
+      <!-- Menu -->
+      <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
+        <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a></li>
+        <li><a href="/zigzag" class="nav-link {% if request.path == '/zigzag' %}active{% endif %}">Zigzag Cipher</a>
+        </li>
+        <li><a href="/vigenere" class="nav-link {% if request.path == '/vigenere' %}active{% endif %}">Vigenere
+            Cipher</a></li>
+        <li><a href="/stream" class="nav-link {% if request.path == '/stream' %}active{% endif %}">Stream Cipher</a>
+        </li>
+        <li><a href="/aes" class="nav-link {% if request.path == '/aes' %}active{% endif %}">AES Cipher</a></li>
+        <li><a href="/combine" class="nav-link {% if request.path == '/combine' %}active{% endif %}">Combine Cipher</a>
+        </li>
+      </ul>
 
-<!-- Style khusus untuk animasi & efek hover -->
-<style>
-.nav-link {
-  position: relative;
-  transition: color 0.3s ease;
-}
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 0%;
-  height: 2px;
-  background-color: #3b82f6; /* warna biru Tailwind */
-  transition: width 0.3s ease;
-}
-.nav-link:hover {
-  color: #3b82f6;
-}
-.nav-link:hover::after {
-  width: 100%;
-}
-</style>
 
-<!-- Script untuk toggle menu di mobile -->
-<script>
-document.getElementById('menu-toggle').addEventListener('click', () => {
-  const menu = document.getElementById('mobile-menu');
-  menu.classList.toggle('hidden');
-});
-</script>
+      <!-- Tombol Menu Mobile -->
+      <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-blue-400 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+          class="w-7 h-7">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
 
-  <!-- 🌠 Background Section -->
-  <section class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative"
-         style="background-image: url('{{ url_for("static", filename='back.jpg') }}');">
+    <!-- Menu Mobile -->
+    <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
+      <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+        <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
+        <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
+        <li><a href="/aes" class="nav-link">AES Cipher</a></li>
+        <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
+      </ul>
+    </div>
+  </nav>
 
+  <!-- Style khusus untuk animasi & efek hover -->
+  <style>
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0%;
+      height: 2px;
+      background-color: #3b82f6;
+      /* warna biru Tailwind */
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #3b82f6;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Link aktif */
+    .nav-link.active {
+      color: #3b82f6;
+      pointer-events: none;
+      /* mencegah hover */
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+      /* garis biru penuh di bawah */
+    }
+
+    .nav-link.active:hover::after {
+      width: 100%;
+      /* pastikan hover tidak merubah */
+    }
+  </style>
+
+  <!-- Script untuk toggle menu di mobile -->
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+  </script>
+
+  <section
+    class="flex flex-col justify-start items-center text-center px-6 bg-cover bg-center relative min-h-screen pt-24"
+    style="background-image: url('{{ url_for('static', filename='back.jpg') }}');">
 
     <!-- Overlay gelap -->
-     <div class="absolute inset-0 bg-black bg-opacity-80"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-80"></div>
 
 
     <!-- Konten Utama -->
+
     <div class="relative z-10 bg-gray-900/80 p-8 rounded-xl shadow-lg w-full max-w-3xl">
       <h1 class="text-3xl text-center font-bold text-blue-600 mb-6">Zigzag Cipher</h1>
 
@@ -110,7 +137,7 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
         <!-- Input Key -->
         <input type="text" name="key" placeholder="Masukkan key (angka atau teks)"
           value="{{ request.form.get('key', '') }}"
-          class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+          class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600" />
 
         <!-- Info Konversi Key -->
         {% if key_input %}
@@ -122,15 +149,17 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
         {% endif %}
 
         <!-- Mode -->
-        <select name="mode" class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600">
-          <option value="encrypt" {% if request.form.get('mode') == 'encrypt' %}selected{% endif %}>Enkripsi</option>
-          <option value="decrypt" {% if request.form.get('mode') == 'decrypt' %}selected{% endif %}>Dekripsi</option>
+        <select name="mode"
+          class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="encrypt" {% if request.form.get('mode')=='encrypt' %}selected{% endif %}>Enkripsi</option>
+          <option value="decrypt" {% if request.form.get('mode')=='decrypt' %}selected{% endif %}>Dekripsi</option>
         </select>
 
         <!-- Tombol -->
         <button type="submit" class="w-full bg-blue-600 py-2 rounded-lg hover:bg-blue-700 transition">Proses</button>
       </form>
 
+      <div class="bg-gray-900/80 p-4 rounded-lg max-h-[80vh] overflow-y-auto w-full"></div>
       <!-- Hasil -->
       {% if result %}
       <div class="mt-6 bg-gray-800 p-4 rounded">
@@ -151,7 +180,8 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
             {% for row in grid %}
             <tr>
               {% for col in row %}
-              <td class="border border-gray-700 w-10 h-10 font-semibold {% if col %}text-green-400{% else %}text-gray-600{% endif %}">
+              <td
+                class="border border-gray-700 w-10 h-10 font-semibold {% if col %}text-green-400{% else %}text-gray-600{% endif %}">
                 {{ col }}
               </td>
               {% endfor %}
@@ -164,26 +194,30 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 
       <!-- Ringkasan -->
       {% if result %}
-      <div class="mt-6 bg-gray-800 p-4 rounded">
-        <p class="font-semibold text-lg mb-3 text-blue-400">Ringkasan</p>
+      <div class="mt-6 bg-gray-800 text-left p-4 rounded">
+        <p class="font-semibold text-lg text-left mb-3 text-blue-400">Ringkasan</p>
         <p><span class="font-semibold text-gray-300">Teks Asli:</span>
-          <span class="text-white">{{ request.form.get('text', '') }}</span></p>
+          <span class="text-white">{{ request.form.get('text', '') }}</span>
+        </p>
         <p><span class="font-semibold text-gray-300">Key:</span>
-          <span class="text-white">{{ request.form.get('key', '') }}</span></p>
+          <span class="text-white">{{ request.form.get('key', '') }}</span>
+        </p>
         <p><span class="font-semibold text-gray-300">Hasil Zigzag:</span>
-          <span class="text-blue-400 font-bold text-lg">{{ result }}</span></p>
+          <span class="text-blue-400 font-bold text-lg">{{ result }}</span>
+        </p>
       </div>
       {% endif %}
 
-   
+
     </div>
   </section>
 
 
-   <!-- Footer -->
+  <!-- Footer -->
   <footer class="bg-black text-gray-500 text-center py-6 border-t border-gray-800">
     © 2025 Endes Kriptografi | Dibuat oleh Kelompok 1 Kriptografi
   </footer>
 
 </body>
+
 </html>

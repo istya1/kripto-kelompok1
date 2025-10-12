@@ -81,27 +81,40 @@ def zigzag_decrypt(cipher, key):
 
 # ================== VIGENERE ==================
 def char_to_num(ch):
-    return ord(ch.upper()) - 65
+    """Konversi karakter ke angka 0-25"""
+    if ch.isupper():
+        return ord(ch) - 65
+    elif ch.islower():
+        return ord(ch) - 97
+    else:
+        return None  # bukan huruf
 
-def num_to_char(n):
-    return chr((n % 26) + 65)
+def num_to_char(n, is_upper=True):
+    """Konversi angka 0-25 ke karakter"""
+    if is_upper:
+        return chr((n % 26) + 65)
+    else:
+        return chr((n % 26) + 97)
 
 def vigenere_encrypt(text, key):
     result = ""
     process = []
-    key = key.upper()
-    key_nums = [char_to_num(k) for k in key]
+    key = key.upper()  # kunci tetap di uppercase
+    key_nums = [ord(k) - 65 for k in key if k.isalpha()]
     i = 0
+
     for char in text:
         if char.isalpha():
+            is_upper = char.isupper()
             p_num = char_to_num(char)
-            k_num = key_nums[i % len(key)]
+            k_num = key_nums[i % len(key_nums)]
             c_num = (p_num + k_num) % 26
-            c_char = num_to_char(c_num)
+            c_char = num_to_char(c_num, is_upper)
             result += c_char
+
             process.append({
-                "P": f"{char.upper()}->{p_num}",
-                "K": f"{key[i % len(key)]}->{k_num}",
+                "P": f"{char}->{p_num}",
+                "K": f"{key[i % len(key_nums)]}->{k_num}",
                 "hasil": c_num,
                 "char": c_char
             })
@@ -116,23 +129,25 @@ def vigenere_encrypt(text, key):
             })
     return result, process
 
-
 def vigenere_decrypt(cipher, key):
     result = ""
     process = []
-    key = key.upper()
-    key_nums = [char_to_num(k) for k in key]
+    key = key.upper()  # kunci tetap di uppercase
+    key_nums = [ord(k) - 65 for k in key if k.isalpha()]
     i = 0
+
     for char in cipher:
         if char.isalpha():
+            is_upper = char.isupper()
             c_num = char_to_num(char)
-            k_num = key_nums[i % len(key)]
+            k_num = key_nums[i % len(key_nums)]
             p_num = (c_num - k_num) % 26
-            p_char = num_to_char(p_num)
+            p_char = num_to_char(p_num, is_upper)
             result += p_char
+
             process.append({
-                "P": f"{char.upper()}->{c_num}",
-                "K": f"{key[i % len(key)]}->{k_num}",
+                "P": f"{char}->{c_num}",
+                "K": f"{key[i % len(key_nums)]}->{k_num}",
                 "hasil": p_num,
                 "char": p_char
             })

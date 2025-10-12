@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,96 +16,135 @@
       letter-spacing: .05em;
       animation: typing 3s steps(30, end), blink .75s step-end infinite;
     }
+
     @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
+      from {
+        width: 0
+      }
+
+      to {
+        width: 100%
+      }
     }
+
     @keyframes blink {
-      from, to { border-color: transparent }
-      50% { border-color: #2657a5 }
+
+      from,
+      to {
+        border-color: transparent
+      }
+
+      50% {
+        border-color: #2657a5
+      }
     }
   </style>
 </head>
+
 <body class="bg-black text-white font-sans">
-  
- <!-- Navbar -->
-<nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
-  <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-    
-    <!-- Logo -->
-    <a href="/" class="text-2xl font-extrabold tracking-wide text-blue-500 hover:text-blue-400 transition-all">
-      ENDES<span class="text-gray-300">Crypto</span>
-    </a>
 
-    <!-- Menu -->
-    <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
-      <li><a href="/" class="nav-link">Home</a></li>
-      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
-      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
-      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
-      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
-      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
-    </ul>
+  <!-- Navbar -->
+  <nav class="fixed w-full z-20 backdrop-blur-lg bg-black/60 border-b border-gray-800/60 shadow-md">
+    <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
 
-    <!-- Tombol Menu Mobile -->
-    <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-blue-400 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-           stroke-width="2" stroke="currentColor" class="w-7 h-7">
-        <path stroke-linecap="round" stroke-linejoin="round" 
-              d="M4 6h16M4 12h16m-7 6h7" />
-      </svg>
-    </button>
-  </div>
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-extrabold tracking-wide text-blue-500 hover:text-blue-400 transition-all">
+        ENDES<span class="text-gray-300">Crypto</span>
+      </a>
 
-  <!-- Menu Mobile -->
-  <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
-    <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
-      <li><a href="/" class="nav-link">Home</a></li>
-      <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
-      <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
-      <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
-      <li><a href="/aes" class="nav-link">AES Cipher</a></li>
-      <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
-    </ul>
-  </div>
-</nav>
+      <!-- Menu -->
+      <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
+        <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a></li>
+        <li><a href="/zigzag" class="nav-link {% if request.path == '/zigzag' %}active{% endif %}">Zigzag Cipher</a>
+        </li>
+        <li><a href="/vigenere" class="nav-link {% if request.path == '/vigenere' %}active{% endif %}">Vigenere
+            Cipher</a></li>
+        <li><a href="/stream" class="nav-link {% if request.path == '/stream' %}active{% endif %}">Stream Cipher</a>
+        </li>
+        <li><a href="/aes" class="nav-link {% if request.path == '/aes' %}active{% endif %}">AES Cipher</a></li>
+        <li><a href="/combine" class="nav-link {% if request.path == '/combine' %}active{% endif %}">Combine Cipher</a>
+        </li>
+      </ul>
 
-<!-- Style khusus untuk animasi & efek hover -->
-<style>
-.nav-link {
-  position: relative;
-  transition: color 0.3s ease;
-}
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 0%;
-  height: 2px;
-  background-color: #3b82f6; /* warna biru Tailwind */
-  transition: width 0.3s ease;
-}
-.nav-link:hover {
-  color: #3b82f6;
-}
-.nav-link:hover::after {
-  width: 100%;
-}
-</style>
 
-<!-- Script untuk toggle menu di mobile -->
-<script>
-document.getElementById('menu-toggle').addEventListener('click', () => {
-  const menu = document.getElementById('mobile-menu');
-  menu.classList.toggle('hidden');
-});
-</script>
+      <!-- Tombol Menu Mobile -->
+      <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-blue-400 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+          class="w-7 h-7">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
+      <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+        <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
+        <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
+        <li><a href="/aes" class="nav-link">AES Cipher</a></li>
+        <li><a href="/combine" class="nav-link">Combine Cipher</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Style khusus untuk animasi & efek hover -->
+  <style>
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0%;
+      height: 2px;
+      background-color: #3b82f6;
+      /* warna biru Tailwind */
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #3b82f6;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Link aktif */
+    .nav-link.active {
+      color: #3b82f6;
+      pointer-events: none;
+      /* mencegah hover */
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+      /* garis biru penuh di bawah */
+    }
+
+    .nav-link.active:hover::after {
+      width: 100%;
+      /* pastikan hover tidak merubah */
+    }
+  </style>
+
+  <!-- Script untuk toggle menu di mobile -->
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+  </script>
 
   <!-- Hero Section dengan background foto -->
-  <section 
-  class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative" 
-  style="background-image: url('{{ url_for('static', filename='back.jpg') }}');">
+  <section class="h-screen flex flex-col justify-center items-center text-center px-6 bg-cover bg-center relative"
+    style="background-image: url('{{ url_for('static', filename='back.jpg') }}');">
 
     <!-- Overlay gelap -->
     <div class="absolute inset-0 bg-black bg-opacity-80"></div>
@@ -113,19 +153,18 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
     <div class="relative z-10 mt-20">
       <h2 class="typing text-3xl md:text-5xl font-bold mb-4">WELCOME TO </h2>
       <h1 class="text-4xl md:text-6xl font-extrabold text-blue-600 mb-6"
-    style="text-shadow: 2px 2px 0 #ffffff, -2px 2px 0 #ffffff, 2px -2px 0 #ffffff,-2px -2px 0 #ffffff;">
- ENDES KRIPTOGRAFI
-</h1>
+        style="text-shadow: 2px 2px 0 #ffffff, -2px 2px 0 #ffffff, 2px -2px 0 #ffffff,-2px -2px 0 #ffffff;">
+        ENDES KRIPTOGRAFI
+      </h1>
 
       <h3 class="max-w-2xl text-gray-200 mb-8">
-        Kriptografi adalah ilmu dan seni menjaga kerahasiaan informasi dengan cara 
-        mengubah pesan (plaintext) menjadi bentuk tidak terbaca (ciphertext). 
+        Kriptografi adalah ilmu dan seni menjaga kerahasiaan informasi dengan cara
+        mengubah pesan (plaintext) menjadi bentuk tidak terbaca (ciphertext).
         Hanya orang dengan kunci tertentu yang dapat mengembalikan pesan ke bentuk aslinya.
       </h3>
-    <a href="/metode" 
-   class="bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
-  Know More
-</a>
+      <a href="/metode" class="bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
+        Know More
+      </a>
 
     </div>
   </section>
@@ -136,4 +175,5 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
   </footer>
 
 </body>
+
 </html>
