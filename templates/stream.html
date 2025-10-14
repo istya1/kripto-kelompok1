@@ -26,7 +26,7 @@
 
       <!-- Menu -->
       <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
-        <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a></li>
+        <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Beranda</a></li>
         <li><a href="/zigzag" class="nav-link {% if request.path == '/zigzag' %}active{% endif %}">Zigzag Cipher</a>
         </li>
         <li><a href="/vigenere" class="nav-link {% if request.path == '/vigenere' %}active{% endif %}">Vigenere
@@ -51,7 +51,7 @@
     <!-- Menu Mobile -->
     <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
       <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
-        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/" class="nav-link">Beranda</a></li>
         <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
         <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
         <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
@@ -129,11 +129,11 @@
 
       <!-- Form -->
       <form method="POST" class="space-y-4">
-        <textarea name="text" placeholder="Masukkan plaintext/ciphertext"
+        <textarea name="text" placeholder="Masukkan teks (plaintext/ciphertext)"
           class="w-full p-3 rounded bg-gray-800 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
           rows="4">{{ text }}</textarea>
 
-        <input type="text" name="key" placeholder="Masukkan key (seed)" value="{{ key }}"
+        <input type="text" name="key" placeholder="Masukkan key (seed atau teks)" value="{{ key }}"
           class="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-600" />
 
         <select name="mode"
