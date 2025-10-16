@@ -7,76 +7,80 @@ app = Flask(__name__)
 # ================== ZIGZAG ==================
 
 def key_to_number(key):
-    """Konversi key (angka atau teks) ke jumlah rail (minimal 2)."""
     if key.isdigit():
         return max(2, int(key))
     else:
-        # Ubah teks menjadi nilai numerik berdasarkan jumlah karakter unik
+        key = key.upper()  # ubah semua ke huruf besar dulu
         total = sum(ord(c) for c in key)
-        num = (total % 7) + 2  # hasil 2–8 biar tidak terlalu ekstrem
+        num = (total % 7) + 2
         return num
 
 def zigzag_encrypt(text, key):
     # Jangan hapus spasi — langsung pakai teks apa adanya
+    
+    # Buat matriks 2D berisi karakter '\n' sebanyak jumlah baris = key dan kolom = panjang teks.
     rail = [['\n' for _ in range(len(text))] for _ in range(key)]
-    dir_down = False
-    row, col = 0, 0
-    process = []
+    
+    dir_down = False   # arah awal belum turun
+    row, col = 0, 0    # posisi awal di baris 0 kolom 0
+    process = []       # untuk menyimpan langkah-langkah proses enkripsi
 
-    for i, ch in enumerate(text):
-        if row == 0 or row == key - 1:
-            dir_down = not dir_down
-        rail[row][col] = ch  # spasi tetap masuk ke rail
-        process.append(f"Masukkan '{ch}' ke rail {row+1}, kolom {col+1}")
-        col += 1
-        row += 1 if dir_down else -1
+    for i, ch in enumerate(text):            # Loop tiap huruf dalam teks asli
+        if row == 0 or row == key - 1:       # Jika di atas (baris 0) atau di bawah (baris terakhir)
+            dir_down = not dir_down          # maka ubah arah (naik/turun)
+        
+        rail[row][col] = ch                  # letakkan huruf pada posisi [baris, kolom] sekarang
+        process.append(f"Masukkan '{ch}' ke rail {row+1}, kolom {col+1}")  # catat proses
+        
+        col += 1                             # pindah ke kolom berikutnya
+        row += 1 if dir_down else -1         # naik/turun satu baris tergantung arah
 
-    result = []
-    for r in rail:
+    result = []                            # List untuk menampung huruf-huruf hasil
+    for r in rail:                         # Loop per baris
         for c in r:
-            if c != '\n':
+            if c != '\n':                  # Ambil hanya posisi yang berisi huruf (bukan '\n')
                 result.append(c)
-    return "".join(result), process
-
+    return "".join(result), process        # Gabungkan huruf-huruf jadi ciphertext dan kembalikan proses
 
 def zigzag_decrypt(cipher, key):
     rail = [['\n' for _ in range(len(cipher))] for _ in range(key)]
     
-    dir_down = None
-    row, col = 0, 0
-    for i in range(len(cipher)):
-        if row == 0:
+    dir_down = None     # arah belum ditentukan
+    row, col = 0, 0     # posisi awal
+    for i in range(len(cipher)):          # Loop sebanyak panjang cipher
+        if row == 0:                      # kalau di baris atas → mulai turun
             dir_down = True
-        elif row == key - 1:
+        elif row == key - 1:              # kalau di baris bawah → mulai naik
             dir_down = False
-        rail[row][col] = '*'
-        col += 1
-        row += 1 if dir_down else -1
+        rail[row][col] = '*'              # tandai posisi yang seharusnya berisi huruf
+        col += 1                          # pindah ke kolom berikut
+        row += 1 if dir_down else -1      # naik/turun sesuai arah
 
     # Isi rail sesuai urutan cipher (termasuk spasi)
     index = 0
-    for i in range(key):
-        for j in range(len(cipher)):
+    for i in range(key):                    # untuk tiap baris
+        for j in range(len(cipher)):        # untuk tiap kolom
             if rail[i][j] == '*' and index < len(cipher):
-                rail[i][j] = cipher[index]
+                rail[i][j] = cipher[index]  # isi posisi '*' dengan huruf cipher sesuai urutan
                 index += 1
 
-    result = []
+    result = []                             # hasil plaintext
     row, col = 0, 0
     dir_down = None
-    process = []
+    process = []                            # untuk mencatat langkah pembacaan
 
     for i in range(len(cipher)):
         if row == 0:
             dir_down = True
         elif row == key - 1:
             dir_down = False
-        if rail[row][col] != '\n':
-            result.append(rail[row][col])
+
+        if rail[row][col] != '\n':          # jika posisi berisi huruf
+            result.append(rail[row][col])   # ambil huruf
             process.append(f"Ambil '{rail[row][col]}' dari rail {row+1}, kolom {col+1}")
+
         col += 1
         row += 1 if dir_down else -1
-
     return "".join(result), process
 
 # ================== VIGENERE ==================
