@@ -85,34 +85,39 @@ def zigzag_decrypt(cipher, key):
 
 # ================== VIGENERE ==================
 def char_to_num(ch):
-    """Konversi karakter ke angka 0-25"""
+    """Konversi karakter ke angka 0-35 (A-Z=0-25, 0-9=26-35)"""
     if ch.isupper():
-        return ord(ch) - 65
+        return ord(ch) - 65  # A–Z → 0–25
     elif ch.islower():
-        return ord(ch) - 97
+        return ord(ch) - 97  # a–z → 0–25
+    elif ch.isdigit():
+        return 26 + int(ch)  # 0–9 → 26–35
     else:
-        return None  # bukan huruf
+        return None  # karakter lain tidak diproses
+
 
 def num_to_char(n, is_upper=True):
-    """Konversi angka 0-25 ke karakter"""
-    if is_upper:
-        return chr((n % 26) + 65)
+    """Konversi angka 0–35 kembali ke huruf/angka"""
+    n = n % 36
+    if n < 26:
+        return chr(n + (65 if is_upper else 97))
     else:
-        return chr((n % 26) + 97)
+        return str(n - 26)
+
 
 def vigenere_encrypt(text, key):
     result = ""
     process = []
-    key = key.upper()  # kunci tetap di uppercase
-    key_nums = [ord(k) - 65 for k in key if k.isalpha()]
+    key = key.upper()
+    key_nums = [char_to_num(k) % 26 for k in key if k.isalpha()]  # kunci tetap huruf
     i = 0
 
     for char in text:
-        if char.isalpha():
-            is_upper = char.isupper()
-            p_num = char_to_num(char)
+        p_num = char_to_num(char)
+        if p_num is not None:
             k_num = key_nums[i % len(key_nums)]
-            c_num = (p_num + k_num) % 26
+            c_num = (p_num + k_num) % 36  # ubah jadi mod 36
+            is_upper = char.isupper()
             c_char = num_to_char(c_num, is_upper)
             result += c_char
 
@@ -131,21 +136,23 @@ def vigenere_encrypt(text, key):
                 "hasil": "-",
                 "char": char
             })
+
     return result, process
+
 
 def vigenere_decrypt(cipher, key):
     result = ""
     process = []
-    key = key.upper()  # kunci tetap di uppercase
-    key_nums = [ord(k) - 65 for k in key if k.isalpha()]
+    key = key.upper()
+    key_nums = [char_to_num(k) % 26 for k in key if k.isalpha()]
     i = 0
 
     for char in cipher:
-        if char.isalpha():
-            is_upper = char.isupper()
-            c_num = char_to_num(char)
+        c_num = char_to_num(char)
+        if c_num is not None:
             k_num = key_nums[i % len(key_nums)]
-            p_num = (c_num - k_num) % 26
+            p_num = (c_num - k_num) % 36  # mod 36
+            is_upper = char.isupper()
             p_char = num_to_char(p_num, is_upper)
             result += p_char
 
@@ -164,6 +171,7 @@ def vigenere_decrypt(cipher, key):
                 "hasil": "-",
                 "char": char
             })
+
     return result, process
 
 # ================== STREAM (LFSR) ==================
