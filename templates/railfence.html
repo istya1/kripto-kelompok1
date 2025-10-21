@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Zigzag Cipher</title>
+  <title>Rail Fence Cipher</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     function copyResult() {
@@ -28,7 +28,7 @@
       <!-- Menu -->
       <ul class="hidden md:flex flex-1 justify-center space-x-8 text-gray-300 font-medium">
         <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Beranda</a></li>
-        <li><a href="/zigzag" class="nav-link {% if request.path == '/zigzag' %}active{% endif %}">Zigzag Cipher</a>
+        <li><a href="/railfence" class="nav-link {% if request.path == '/railfence' %}active{% endif %}">Rail Fence Cipher</a>
         </li>
         <li><a href="/vigenere" class="nav-link {% if request.path == '/vigenere' %}active{% endif %}">Vigenere
             Cipher</a></li>
@@ -53,7 +53,7 @@
     <div id="mobile-menu" class="hidden md:hidden bg-black/90 border-t border-gray-800">
       <ul class="flex flex-col items-center space-y-4 py-4 text-gray-300">
         <li><a href="/" class="nav-link">Beranda</a></li>
-        <li><a href="/zigzag" class="nav-link">Zigzag Cipher</a></li>
+        <li><a href="/railfence" class="nav-link">Rail Fence Cipher</a></li>
         <li><a href="/vigenere" class="nav-link">Vigenere Cipher</a></li>
         <li><a href="/stream" class="nav-link">Stream Cipher</a></li>
         <li><a href="/aes" class="nav-link">AES Cipher</a></li>
@@ -126,7 +126,7 @@
     <!-- Konten Utama -->
 
     <div class="relative z-10 bg-gray-900/80 p-8 rounded-xl shadow-lg w-full max-w-3xl">
-      <h1 class="text-3xl text-center font-bold text-blue-600 mb-6">Zigzag Cipher</h1>
+      <h1 class="text-3xl text-center font-bold text-blue-600 mb-6">Rail Fence Cipher</h1>
 
       <!-- Form Input -->
       <form method="POST" class="space-y-4">
@@ -171,10 +171,10 @@
       </div>
       {% endif %}
 
-      <!-- Visualisasi Zigzag -->
+      <!-- Visualisasi Rail Fence -->
       {% if grid %}
       <div class="mt-6 bg-gray-800 p-4 rounded">
-        <p class="font-semibold text-lg mb-3 text-blue-400">Visualisasi Zigzag:</p>
+        <p class="font-semibold text-lg mb-3 text-blue-400">Visualisasi Rail Fence:</p>
         <div class="overflow-x-auto">
           <table class="w-full text-center border border-gray-700 text-gray-200">
             {% for row in grid %}
@@ -202,7 +202,7 @@
         <p><span class="font-semibold text-gray-300">Key:</span>
           <span class="text-white">{{ request.form.get('key', '') }}</span>
         </p>
-        <p><span class="font-semibold text-gray-300">Hasil Zigzag:</span>
+        <p><span class="font-semibold text-gray-300">Hasil Rail Fence:</span>
           <span class="text-blue-400 font-bold text-lg">{{ result }}</span>
         </p>
       </div>

@@ -4,27 +4,29 @@ from Crypto.Util.Padding import pad, unpad
 import base64
 
 app = Flask(__name__)
-# ================== ZIGZAG ==================
+# ================== RAIL FENCE  ==================
 
 def key_to_number(key):
-    if key.isdigit():
-        return max(2, int(key))
+    if key.isdigit(): #mengecek aapakah key berupa angka
+        return max(2, int(key)) # minimal rail 2
     else:
         key = key.upper()  # ubah semua ke huruf besar dulu
-        total = sum(ord(c) for c in key)
+        total = sum(ord(c) for c in key) #Menghitung jumlah nilai ASCII dari setiap karakter dalam key.
         num = (total % 7) + 2
         return num
 
-def zigzag_encrypt(text, key):
-    # Jangan hapus spasi — langsung pakai teks apa adanya
-    
-    # Buat matriks 2D berisi karakter '\n' sebanyak jumlah baris = key dan kolom = panjang teks.
+def railfence_encrypt(text, key):
+# ================== Membuat struktur pagar/ matriks 2D  ==================
+
+    # Buat matriks 2D berisi karakter '\n',  jumlah baris = key,  kolom = panjang teks.
     rail = [['\n' for _ in range(len(text))] for _ in range(key)]
     
+# ================== Inisialisasi Arah dan Posisi Awal  ==================
     dir_down = False   # arah awal belum turun
     row, col = 0, 0    # posisi awal di baris 0 kolom 0
     process = []       # untuk menyimpan langkah-langkah proses enkripsi
 
+# ================== Algoritma RAIL FENCE  ==================
     for i, ch in enumerate(text):            # Loop tiap huruf dalam teks asli
         if row == 0 or row == key - 1:       # Jika di atas (baris 0) atau di bawah (baris terakhir)
             dir_down = not dir_down          # maka ubah arah (naik/turun)
@@ -42,7 +44,7 @@ def zigzag_encrypt(text, key):
                 result.append(c)
     return "".join(result), process        # Gabungkan huruf-huruf jadi ciphertext dan kembalikan proses
 
-def zigzag_decrypt(cipher, key):
+def railfence_decrypt(cipher, key):
     rail = [['\n' for _ in range(len(cipher))] for _ in range(key)]
     
     dir_down = None     # arah belum ditentukan
@@ -262,7 +264,7 @@ def index():
 def metode():
     return render_template('metode.html')
 
-def zigzag_visualize(text, key):
+def railfence_visualize(text, key):
     rail = [['' for _ in range(len(text))] for _ in range(key)]
     dir_down = False
     row, col = 0, 0
@@ -276,13 +278,30 @@ def zigzag_visualize(text, key):
 
     return rail
 
-@app.route("/zigzag", methods=["GET", "POST"])
-def zigzag_page():
+def railfence_visualize(text, key):
+    rail = [['' for _ in range(len(text))] for _ in range(key)]
+    dir_down = False
+    row, col = 0, 0
+
+    for char in text:
+        rail[row][col] = char
+        col += 1
+
+        if row == 0 or row == key - 1:  # ubah arah jika di atas atau bawah
+            dir_down = not dir_down
+
+        row += 1 if dir_down else -1
+
+    return rail
+
+
+@app.route("/railfence", methods=["GET", "POST"])
+def railfence_page():
     result = None
     process = []
     grid = []
-    key_input = ""   # <- inisialisasi lebih awal
-    key_used = 2     # <- default nilai key (rail minimal 2)
+    key_input = ""
+    key_used = 2
 
     if request.method == "POST":
         text = request.form.get("text", "")
@@ -291,21 +310,21 @@ def zigzag_page():
         mode = request.form.get("mode")
 
         if mode == "encrypt":
-            result, process = zigzag_encrypt(text, key_used)
-            grid = zigzag_visualize(text, key_used)
+            result, process = railfence_encrypt(text, key_used)
+            grid = railfence_visualize(text, key_used)
         else:
-            result, process = zigzag_decrypt(text, key_used)
-            grid = zigzag_visualize(result, key_used)
+            result, process = railfence_decrypt(text, key_used)
+            grid = railfence_visualize(result, key_used)
 
-    # render_template tetap bisa akses semua variabel di atas
     return render_template(
-        "zigzag.html",
+        "railfence.html",
         result=result,
         process=process,
         grid=grid,
         key_input=key_input,
         key_used=key_used
     )
+
 @app.route('/vigenere', methods=['GET', 'POST'])
 def vigenere_page():
     result = None
@@ -366,8 +385,7 @@ def aes_page():
 def combine_page():
     result = ""
     process = []
-    steps = {}  # buat simpan hasil tiap layer biar bisa ditampilkan nanti
-
+    steps = {}
     if request.method == "POST":
         text = request.form.get("text", "")
         key = request.form.get("key", "")
@@ -375,22 +393,20 @@ def combine_page():
 
         try:
             if mode == "encrypt":
-                # ==================== ENKRIPSI 4 LAYER ====================
                 key_rails = key_to_number(key)
-
-                # 1️⃣ Zigzag
-                zigzag_res, proc_zigzag = zigzag_encrypt(text, key_rails)
-                steps["Zigzag"] = zigzag_res
-                process.append("=== ZIGZAG ENCRYPT ===")
-                process.extend(proc_zigzag)
+                # 1️⃣ Rail Fence
+                rf_res, proc_rf = railfence_encrypt(text, key_rails)
+                steps["Railfence"] = rf_res
+                process.append("=== Rail Fence ENCRYPT ===")
+                process.extend(proc_rf)
 
                 # 2️⃣ Vigenere
-                vigenere_res, proc_vigenere = vigenere_encrypt(zigzag_res, key)
+                vigenere_res, proc_vigenere = vigenere_encrypt(rf_res, key)
                 steps["Vigenere"] = vigenere_res
                 process.append("\n=== VIGENERE ENCRYPT ===")
                 process.extend(proc_vigenere)
 
-                # 3️⃣ Stream (LFSR)
+                # 3️⃣ Stream
                 stream_res, proc_stream = stream_cipher_lfsr(vigenere_res, seed=key, taps=[0, 2], mode="encrypt")
                 steps["Stream"] = stream_res
                 process.append("\n=== STREAM ENCRYPT ===")
@@ -403,11 +419,8 @@ def combine_page():
                 process.extend(proc_aes)
 
                 result = aes_res
-
             elif mode == "decrypt":
-                # ==================== DEKRIPSI 4 LAYER ====================
                 key_rails = key_to_number(key)
-
                 # 1️⃣ AES
                 aes_res, proc_aes = aes_decrypt(text, key)
                 steps["AES"] = aes_res
@@ -426,19 +439,17 @@ def combine_page():
                 process.append("\n=== VIGENERE DECRYPT ===")
                 process.extend(proc_vigenere)
 
-                # 4️⃣ Zigzag
-                zigzag_res, proc_zigzag = zigzag_decrypt(vigenere_res, key_rails)
-                steps["Zigzag"] = zigzag_res
-                process.append("\n=== ZIGZAG DECRYPT ===")
-                process.extend(proc_zigzag)
+                # 4️⃣ Rail Fence
+                rf_res, proc_rf = railfence_decrypt(vigenere_res, key_rails)
+                steps["Railfence"] = rf_res
+                process.append("\n=== RAILFENCE DECRYPT ===")
+                process.extend(proc_rf)
 
-                result = zigzag_res
-
+                result = rf_res
         except Exception as e:
             process.append(f"❌ Error: {str(e)}")
 
     return render_template("combine.html", result=result, process=process, steps=steps)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
