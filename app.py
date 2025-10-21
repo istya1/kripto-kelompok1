@@ -8,79 +8,85 @@ app = Flask(__name__)
 
 def key_to_number(key):
     if key.isdigit(): #mengecek aapakah key berupa angka
-        return max(2, int(key)) # minimal rail 2
+        return max(2, int(key)) 
     else:
-        key = key.upper()  # ubah semua ke huruf besar dulu
+        key = key.upper()  
         total = sum(ord(c) for c in key) #Menghitung jumlah nilai ASCII dari setiap karakter dalam key.
         num = (total % 7) + 2
         return num
 
 def railfence_encrypt(text, key):
-# ================== Membuat struktur pagar/ matriks 2D  ==================
 
-    # Buat matriks 2D berisi karakter '\n',  jumlah baris = key,  kolom = panjang teks.
-    rail = [['\n' for _ in range(len(text))] for _ in range(key)]
+    rail = [['\n' for _ in range(len(text))] for _ in range(key)] # Buat matriks 2D berisi karakter '\n'
     
-# ================== Inisialisasi Arah dan Posisi Awal  ==================
-    dir_down = False   # arah awal belum turun
-    row, col = 0, 0    # posisi awal di baris 0 kolom 0
-    process = []       # untuk menyimpan langkah-langkah proses enkripsi
+#Inisialisasi Arah dan Posisi Awal
+    dir_down = False   
+    row, col = 0, 0    
+    process = []      
 
-# ================== Algoritma RAIL FENCE  ==================
-    for i, ch in enumerate(text):            # Loop tiap huruf dalam teks asli
-        if row == 0 or row == key - 1:       # Jika di atas (baris 0) atau di bawah (baris terakhir)
-            dir_down = not dir_down          # maka ubah arah (naik/turun)
+# Algoritma RAIL FENCE  
+    for i, ch in enumerate(text):    
+        #  ubah arah (naik/turun)       
+        if row == 0 or row == key - 1:      
+            dir_down = not dir_down          
         
-        rail[row][col] = ch                  # letakkan huruf pada posisi [baris, kolom] sekarang
-        process.append(f"Masukkan '{ch}' ke rail {row+1}, kolom {col+1}")  # catat proses
-        
-        col += 1                             # pindah ke kolom berikutnya
-        row += 1 if dir_down else -1         # naik/turun satu baris tergantung arah
+        #menempatkan karakter pada posisi rail yang sesuai
+        rail[row][col] = ch                  
+        process.append(f"Masukkan '{ch}' ke rail {row+1}, kolom {col+1}")  
+        col += 1    #pindah ke kolom berikutnya dan naik/turun sesuai arah                         
+        row += 1 if dir_down else -1        
 
-    result = []                            # List untuk menampung huruf-huruf hasil
-    for r in rail:                         # Loop per baris
+    result = []                            
+    for r in rail:                        
         for c in r:
-            if c != '\n':                  # Ambil hanya posisi yang berisi huruf (bukan '\n')
+            if c != '\n':                  
                 result.append(c)
-    return "".join(result), process        # Gabungkan huruf-huruf jadi ciphertext dan kembalikan proses
+    return "".join(result), process      #menggabungkan karakter menjadi string hasil 
 
 def railfence_decrypt(cipher, key):
-    rail = [['\n' for _ in range(len(cipher))] for _ in range(key)]
+   
+    rail = [['\n' for _ in range(len(cipher))] for _ in range(key)] # Buat matriks 2D berisi karakter '\n'
     
-    dir_down = None     # arah belum ditentukan
-    row, col = 0, 0     # posisi awal
-    for i in range(len(cipher)):          # Loop sebanyak panjang cipher
-        if row == 0:                      # kalau di baris atas → mulai turun
-            dir_down = True
-        elif row == key - 1:              # kalau di baris bawah → mulai naik
+    dir_down = None     
+    row, col = 0, 0    
+
+# Inisialisasi Arah dan mengatur posisi 
+    for i in range(len(cipher)):         
+        if row == 0:                     
+            dir_down = True 
+        elif row == key - 1:              
             dir_down = False
-        rail[row][col] = '*'              # tandai posisi yang seharusnya berisi huruf
-        col += 1                          # pindah ke kolom berikut
+        rail[row][col] = '*'              
+        col += 1                          
         row += 1 if dir_down else -1      # naik/turun sesuai arah
 
-    # Isi rail sesuai urutan cipher (termasuk spasi)
     index = 0
-    for i in range(key):                    # untuk tiap baris
-        for j in range(len(cipher)):        # untuk tiap kolom
+    for i in range(key):          
+        #mengisi huruf cipher ke posisi yang sudah ditandai '*'          
+        for j in range(len(cipher)):        
             if rail[i][j] == '*' and index < len(cipher):
-                rail[i][j] = cipher[index]  # isi posisi '*' dengan huruf cipher sesuai urutan
+                rail[i][j] = cipher[index]  
                 index += 1
 
-    result = []                             # hasil plaintext
+    result = [] 
+    #menentukan posisi awal dan menentukan arah                            
     row, col = 0, 0
-    dir_down = None
-    process = []                            # untuk mencatat langkah pembacaan
+    dir_down = None 
+    process = []          
 
     for i in range(len(cipher)):
+        # Tentukan arah
         if row == 0:
             dir_down = True
         elif row == key - 1:
             dir_down = False
 
-        if rail[row][col] != '\n':          # jika posisi berisi huruf
-            result.append(rail[row][col])   # ambil huruf
+        #mengecek dan mengambil huruf dari rail
+        if rail[row][col] != '\n':          
+            result.append(rail[row][col])  
             process.append(f"Ambil '{rail[row][col]}' dari rail {row+1}, kolom {col+1}")
 
+        #pindah ke kolom berikutnya dan naik/turun sesuai arah
         col += 1
         row += 1 if dir_down else -1
     return "".join(result), process
@@ -270,20 +276,6 @@ def railfence_visualize(text, key):
     row, col = 0, 0
 
     for char in text:
-        if row == 0 or row == key-1:
-            dir_down = not dir_down
-        rail[row][col] = char
-        col += 1
-        row += 1 if dir_down else -1
-
-    return rail
-
-def railfence_visualize(text, key):
-    rail = [['' for _ in range(len(text))] for _ in range(key)]
-    dir_down = False
-    row, col = 0, 0
-
-    for char in text:
         rail[row][col] = char
         col += 1
 
@@ -297,12 +289,14 @@ def railfence_visualize(text, key):
 
 @app.route("/railfence", methods=["GET", "POST"])
 def railfence_page():
+    # Inisialisasi variabel
     result = None
     process = []
     grid = []
     key_input = ""
     key_used = 2
 
+    # Proses form ketika metode POST
     if request.method == "POST":
         text = request.form.get("text", "")
         key_input = request.form.get("key", "2")
